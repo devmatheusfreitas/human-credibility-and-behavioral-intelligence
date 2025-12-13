@@ -1,4 +1,4 @@
-# 🧠🎥 Sistema Experimental de Análise Multimodal Emocional
+# 🧠🎥 Sistema Experimental - IA de Reconhecimento Comportamental Multimodal
 
 > **Status geral:** 🚧 Em desenvolvimento
 
