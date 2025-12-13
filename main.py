@@ -1,19 +1,23 @@
 import cv2
 import mediapipe as mp
 
-# MediaPipe - Modules Initialization:
 
-mp_face_detection = mp.solutions.face_detection          # Namespace -> facial detection models, inference models.
-mp_drawing = mp.solutions.drawing_utils                  # Utilitary functions to draw bounding box, points, lines, etc.
+mp_face_mesh = mp.solutions.face_mesh
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
+
 
 cap = cv2.VideoCapture(0)                                # Start capturing -> 0, 1, 2, etc.
 
-# MediaPipe - Context Manager:
 
-with mp_face_detection.FaceDetection(
-    model_selection=0,                                   # 0 = near faces (single). 1 = middle/far distance (multiples)
-    min_detection_confidence=0.6                         # 0-1 = recognition confidence
-) as face_detection:
+with mp_face_mesh.FaceMesh(
+    static_image_mode=False,
+    max_num_faces=2,
+    refine_landmarks=True,
+    min_detection_confidence=0.6,
+    min_tracking_confidence=0.6
+) as face_mesh:
+
     
     #Main Loop:
 
@@ -22,15 +26,20 @@ with mp_face_detection.FaceDetection(
         if not ret:
             break
 
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Color conversion cv2=BGR. mp=RGB.
-        results = face_detection.process(rgb_frame)         # Frame processment
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = face_mesh.process(rgb_frame)
 
-        if results.detections:                              # REVIEW AND UNDERSTAND THIS: 
-            for detection in results.detections:            # Detections is a List, and SUPER important to you to know all about it
-                keypoint_drawing_spec = results             
-                mp_drawing.draw_detection(frame, detection) # Draw bounding box and score in the frame
+        for face_landmarks in results.multi_face_landmarks:
+            mp_drawing.draw_landmarks(
+                image=frame,
+                landmark_list=face_landmarks,
+                connections=mp_face_mesh.FACEMESH_TESSELATION,
+                landmark_drawing_spec=None,
+                connection_drawing_spec=mp_drawing_styles.get_default_face_mesh_tesselation_style()
+            )
 
-        cv2.imshow("Face Detection", frame)                 # Open a windows called "Face Detection" and draw the frame
+
+        cv2.imshow("Face Mesh", frame)                 # Open a windows called "Face Mesh" and draw the frame
 
         if cv2.waitKey(1) & 0xFF == 27:                     # WaitKey(1) refreshes 1ms and wait for detected 'esc' key pressed
             break
