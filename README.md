@@ -1,4 +1,4 @@
-# 🧠🎥 Sistema Experimental - IA de Reconhecimento Comportamental Multimodal
+# 🧠🎥 Sistema Experimental - IA como Análise de Credibilidade e Inteligência Comportamental
 
 > **Status geral:** 🚧 Em desenvolvimento
 
